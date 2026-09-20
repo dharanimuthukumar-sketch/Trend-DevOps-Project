@@ -1,0 +1,166 @@
+Started by GitHub push by dharanimuthukumar-sketch
+Obtained Jenkinsfile from git https://github.com/dharanimuthukumar-sketch/Trend-DevOps/
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/Trend-CI-CD-Pipeline
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+The recommended git tool is: NONE
+No credentials specified
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/Trend-CI-CD-Pipeline/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/dharanimuthukumar-sketch/Trend-DevOps/ # timeout=10
+Fetching upstream changes from https://github.com/dharanimuthukumar-sketch/Trend-DevOps/
+ > git --version # timeout=10
+ > git --version # 'git version 2.34.1'
+ > git fetch --tags --force --progress -- https://github.com/dharanimuthukumar-sketch/Trend-DevOps/ +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision dbaaf3ae62509e70101341a6aab3b1973fdd2151 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f dbaaf3ae62509e70101341a6aab3b1973fdd2151 # timeout=10
+Commit message: "fix: modify container argument flags syntax parameters"
+ > git rev-list --no-walk 874d2efeee4aa3697f0c428ba44368a792fe6e43 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Pull Codebase)
+[Pipeline] cleanWs
+[WS-CLEANUP] Deleting project workspace...
+[WS-CLEANUP] Deferred wipeout is used...
+[WS-CLEANUP] done
+[Pipeline] checkout
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/dharanimuthukumar-sketch/Trend-DevOps/
+ > git init /var/lib/jenkins/workspace/Trend-CI-CD-Pipeline # timeout=10
+Fetching upstream changes from https://github.com/dharanimuthukumar-sketch/Trend-DevOps/
+ > git --version # timeout=10
+ > git --version # 'git version 2.34.1'
+ > git fetch --tags --force --progress -- https://github.com/dharanimuthukumar-sketch/Trend-DevOps/ +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/dharanimuthukumar-sketch/Trend-DevOps/ # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision dbaaf3ae62509e70101341a6aab3b1973fdd2151 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f dbaaf3ae62509e70101341a6aab3b1973fdd2151 # timeout=10
+Commit message: "fix: modify container argument flags syntax parameters"
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Docker Image Build)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ docker build -t namodharani/trend-app:17 .
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  9.332MB
+Step 1/6 : FROM node:18-alpine
+ ---> 8d6421d663b4
+Step 2/6 : WORKDIR /app
+ ---> Using cache
+ ---> 9ca5f0337fe8
+Step 3/6 : COPY dist/ ./dist
+ ---> Using cache
+ ---> 6318a98c8211
+Step 4/6 : RUN npm install -g serve
+ ---> Using cache
+ ---> 88a7a0cd1813
+Step 5/6 : EXPOSE 3000
+ ---> Using cache
+ ---> d1166362913a
+Step 6/6 : CMD ["serve", "-s", "dist", "-l", "3000", "--address", "0.0.0.0"]
+ ---> Running in fa2932660bb3
+ ---> Removed intermediate container fa2932660bb3
+ ---> 659049e4c6f3
+Successfully built 659049e4c6f3
+Successfully tagged namodharani/trend-app:17
+[Pipeline] }
+[Pipeline] // withEnv
+Did you forget the `def` keyword? WorkflowScript seems to be setting a field named trendImage (to a value of type Image) which could lead to memory leaks or other issues.
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (DockerHub Registry Push)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] withCredentials
+Masking supported pattern matches of $DOCKER_PASS
+[Pipeline] {
+[Pipeline] sh
++ echo ****
++ docker login -u namodharani --password-stdin
+Login Succeeded
+[Pipeline] sh
++ docker tag namodharani/trend-app:17 namodharani/trend-app:latest
+[Pipeline] sh
++ docker push namodharani/trend-app:17
+The push refers to repository [docker.io/namodharani/trend-app]
+2bcd23366831: Waiting
+1e5a4c89cee5: Layer already exists
+25ff2da83641: Layer already exists
+45d172c47ef1: Layer already exists
+f18232174bc9: Layer already exists
+b5cb60a25ae7: Layer already exists
+dd71dde834b5: Layer already exists
+2bcd23366831: Layer already exists
+17: digest: sha256:659049e4c6f34472b275570767637f221a33306beff27ec2d6982fc93f00009d size: 1837
+[Pipeline] sh
++ docker push namodharani/trend-app:latest
+The push refers to repository [docker.io/namodharani/trend-app]
+dd71dde834b5: Layer already exists
+2bcd23366831: Layer already exists
+1e5a4c89cee5: Layer already exists
+25ff2da83641: Layer already exists
+45d172c47ef1: Layer already exists
+b5cb60a25ae7: Layer already exists
+f18232174bc9: Layer already exists
+latest: digest: sha256:659049e4c6f34472b275570767637f221a33306beff27ec2d6982fc93f00009d size: 1837
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Kubernetes Infrastructure Sync)
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ sed -i s|DOCKERHUB_USERNAME/trend-app:latest|namodharani/trend-app:17|g k8s/deployment.yaml
+[Pipeline] sh
++ aws eks update-kubeconfig --region us-east-1 --name trend-cluster
+Updated context arn:aws:eks:us-east-1:494873120327:cluster/trend-cluster in /var/lib/jenkins/.kube/config
+[Pipeline] sh
++ kubectl apply -f k8s/deployment.yaml
+deployment.apps/trend-deployment configured
+[Pipeline] sh
++ kubectl apply -f k8s/service.yaml
+service/trend-service unchanged
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
